@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error, r2_score
 
 data = {
     'repeticoes' : [10, 12, 8, 10, 12, 8, 10, 12, 8, 10, 12, 8, 0],
@@ -15,7 +16,7 @@ dt = pd.DataFrame(data)
 
 oe_carga = OrdinalEncoder(categories=[['nenhuma', 'leve', 'moderada', 'pesada']])
 
-dt['carga'] = oe_carga.fit_transform(dt[['carga']])
+dt['carga'] = oe_carga.rafit_tnsform(dt[['carga']])
 
 x = dt[['repeticoes', 'carga', 'amplitude']]
 y = dt['eficiencia']
@@ -30,6 +31,10 @@ predicoes = modelo_ia.predict(pd.DataFrame({
     'amplitude': [75]
     }))
 print(predicoes)
-print(oe_carga.inverse_transform(dt['carga'].values.reshape(-1,1)))
+print(oe_carga.inverse_transform(dt[['carga']].values))
 
-print(dt) 
+y_pred = modelo_ia.predict(x_test)
+mae = mean_absolute_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+print(f'MAE: {mae}')
+print(f'R²: {r2}')
